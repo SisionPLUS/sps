@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPS - SisionPLUS SMP</title>
+
+    <!-- 큐브(cube) 모양 SVG 파비콘 -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%235865F2' d='M239.1 6.3c10.3-6 23.5-6 33.8 0l216 126c10.2 6 16.5 17 16.5 28.8V351.2c0 11.8-6.3 22.8-16.5 28.8l-216 126c-10.3 6-23.5 6-33.8 0l-216-126C12.3 374 6 363 6 351.2V161.1c0-11.8 6.3-22.8 16.5-28.8l216-126zM256 62.1L88.2 160 256 257.9 423.8 160 256 62.1zm192 140.2l-160 93.3v187.6l160-93.3V202.3z'/></svg>">
+
+    <!-- FontAwesome 아이콘 및 폰트 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700;900&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 📱 모바일 화면 최적화 (768px 이하) */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 5%;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .logo {
+                font-size: 1.8rem;
+            }
+
+            nav {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px 15px;
+            }
+
+            nav a {
+                margin-left: 0;
+                font-size: 0.85rem;
+            }
+
+            .btn-discord {
+                padding: 8px 18px;
+                font-size: 0.85rem;
+            }
+
+            .hero {
+                padding: 80px 15px 40px 15px;
+            }
+
+            /* 모바일에서 수직(열) 정렬로 전환 + 글자 크기 최적화 */
+            .typing-container {
+                flex-direction: column;
+                font-size: 1.8rem;
+                gap: 5px;
+            }
+
+            .typing-text {
+                font-size: 1.8rem;
+                white-space: nowrap;
+            }
+
+            .hero p {
+                font-size: 0.95rem;
+                line-height: 1.5;
+                word-break: keep-all;
+            }
+
+            .btn-main {
+                padding: 12px 22px;
+                font-size: 0.95rem;
+            }
+
+            .section-container {
+                padding: 50px 20px;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+                margin-bottom: 35px;
+            }
+        }
+
+        :root {
+            --primary: #5865F2;
+            --primary-hover: #4752C4;
+            --accent: #57F287;
+            --bg-dark: #0e0f11;
+            --card-bg: rgba(30, 31, 34, 0.85);
+            --border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            font-family: 'Noto Sans KR', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1a1c23 0%, #0e0f11 100%);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 10%;
+            background: rgba(14, 15, 17, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Sora', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo span { color: var(--primary); }
+
+        nav a {
+            color: #b5bac1;
+            text-decoration: none;
+            margin-left: 35px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: 0.2s;
+        }
+
+        nav a:hover { color: #fff; }
+
+        .btn-discord {
+            background-color: var(--primary);
+            color: white !important;
+            padding: 12px 28px;
+            border-radius: 50px;
+            transition: 0.3s ease;
+            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.3);
+        }
+
+        .btn-discord:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 160px 20px 120px 20px;
+        }
+
+        .typing-container {
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .typing-text {
+            color: var(--accent);
+            border-right: 4px solid #fff;
+            animation: blink 0.6s infinite;
+        }
+
+        @keyframes blink { 50% { border-color: transparent; } }
+
+        .hero p {
+            color: #949ba4;
+            font-size: 1.5rem;
+            max-width: 800px;
+            margin-bottom: 40px;
+        }
+
+        .btn-main {
+            background: var(--primary);
+            color: white;
+            padding: 20px 45px;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(88, 101, 242, 0.4);
+        }
+
+        .btn-main:hover {
+            background: var(--primary-hover);
+            transform: translateY(-4px) scale(1.02);
+        }
+
+        .copy-message {
+            margin-top: 15px;
+            height: 24px;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1.1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .copy-message.show {
+            opacity: 1;
+        }
+
+        .section-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 100px 30px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.8rem;
+            font-weight: 900;
+            margin-bottom: 60px;
+        }
+
+        .reveal {
+            opacity: 0;
+            transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+            will-change: transform, opacity;
+        }
+
+        .reveal-left { transform: translateX(-120px); }
+        .reveal-right { transform: translateX(120px); }
+        .reveal.active { opacity: 1; transform: translateX(0); }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 35px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 45px 35px;
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-icon {
+            font-size: 3.2rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+        }
+
+        .card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .card p {
+            color: #949ba4;
+            font-size: 1.15rem;
+            line-height: 1.7;
+        }
+
+        .widgets-section {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: stretch;
+        }
+
+        .info-box {
+            flex: 1.2;
+            min-width: 300px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .info-box h3 { font-size: 1.8rem; margin-bottom: 15px; }
+
+        .icon-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .icon-list li {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 18px;
+            color: #dbdee1;
+            font-size: 1.2rem;
+        }
+
+        .icon-list i { color: var(--accent); font-size: 1.3rem; }
+
+        .minelist-card {
+            flex: 2;
+            min-width: 300px;
+            text-align: center;
+        }
+
+        .minelist-banner {
+            display: inline-block;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 15px;
+        }
+
+        .minelist-banner img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            transition: 0.3s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .minelist-banner img:hover { transform: scale(1.03); }
+
+        .custom-discord-card {
+            flex: 1.5;
+            min-width: 300px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+        }
+
+        .discord-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 18px;
+            margin-bottom: 15px;
+        }
+
+        .discord-header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #5865F2;
+        }
+
+        .online-badge {
+            background: rgba(87, 242, 135, 0.15);
+            color: var(--accent);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .online-dot {
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px var(--accent);
+        }
+
+        .member-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #949ba4;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .member-list {
+            list-style: none;
+            max-height: 260px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding-right: 5px;
+        }
+
+        .member-list::-webkit-scrollbar { width: 6px; }
+        .member-list::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
+        .member-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+        .member-list::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 6px;
+            font-size: 1.05rem;
+            color: #dbdee1;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .member-item:hover { background: rgba(255, 255, 255, 0.05); }
+
+        .avatar-wrapper { position: relative; display: inline-block; }
+        .member-avatar { width: 34px; height: 34px; border-radius: 50%; display: block; }
+        .status-dot {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent);
+            border: 2px solid #1e1f22;
+            border-radius: 50%;
+        }
+
+        .join-btn {
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            padding: 15px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.3);
+        }
+
+        .join-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .system-section {
+            background: rgba(20, 21, 25, 0.6);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .system-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .system-card {
+            background: rgba(30, 31, 34, 0.5);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .system-card i { font-size: 2.5rem; color: var(--accent); margin-bottom: 15px; }
+        .system-card h4 { font-size: 1.4rem; margin-bottom: 10px; }
+        .system-card p { color: #949ba4; font-size: 1rem; }
+
+        .faq-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px 30px;
+            margin-bottom: 20px;
+        }
+
+        .faq-item h4 {
+            font-size: 1.4rem;
+            color: #fff;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .faq-item h4 i { color: var(--primary); }
+        .faq-item p { color: #949ba4; font-size: 1.1rem; padding-left: 32px; }
+
+        .credits-section {
+            background: rgba(20, 21, 25, 0.4);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            overflow: hidden;
+            padding: 80px 0;
+        }
+
+        .carousel-track-wrapper {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .carousel-track-wrapper::before,
+        .carousel-track-wrapper::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            width: 120px;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .carousel-track-wrapper::before { left: 0; background: linear-gradient(to right, var(--bg-dark), transparent); }
+        .carousel-track-wrapper::after { right: 0; background: linear-gradient(to left, var(--bg-dark), transparent); }
+
+        .carousel-track {
+            display: flex;
+            gap: 40px;
+            width: max-content;
+            animation: scrollRight 20s linear infinite;
+        }
+
+        .carousel-track-wrapper:hover .carousel-track { animation-play-state: paused; }
+
+        @keyframes scrollRight {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0%); }
+        }
+
+        .credit-text-card {
+            flex: 0 0 auto;
+            width: 260px;
+            height: 130px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .credit-text-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .credit-title { font-size: 1.25rem; font-weight: 800; color: #ffffff; line-height: 1.2; }
+        .credit-by { font-size: 0.85rem; color: #949ba4; margin: 4px 0; font-weight: 600; }
+        .credit-name { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            color: #949ba4;
+            border-top: 1px solid var(--border-color);
+            font-size: 1rem;
+            background: rgba(10, 11, 13, 0.95);
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="bgCanvas"></canvas>
+
+    <header>
+        <div class="logo">
+            <i class="fa-solid fa-cube"></i> SPS <span>SMP</span>
+        </div>
+        <nav>
+            <a href="#features">서버 특징</a>
+            <a href="#systems">시스템 안내</a>
+            <a href="#community">커뮤니티</a>
+            <a href="#faq">FAQ</a>
+            <a href="#credits">크레딧</a>
+            <a href="https://discord.gg/your-invite" target="_blank" class="btn-discord">
+                <i class="fa-brands fa-discord"></i> 디스코드
+            </a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="typing-container">
+            <span>SPS</span>
+            <span class="typing-text" id="typingText"></span>
+        </div>
+        <p>자유로운 야생과 개성 넘치는 커스텀 시스템이 공존하는 SisionPLUS SMP 서버!</p>
+        
+        <div>
+            <button class="btn-main" onclick="copyAddress()">
+                <i class="fa-regular fa-copy"></i> 서버 주소 복사하기
+            </button>
+            <div id="copyMsg" class="copy-message">
+                <i class="fa-solid fa-check"></i> 복사되었습니다!
+            </div>
+        </div>
+    </section>
+
+    <section class="section-container reveal reveal-left" id="features">
+        <h2 class="section-title">SPS 서버 핵심 특징</h2>
+        <div class="grid-3">
+            <div class="card">
+                <i class="fa-solid fa-bolt card-icon"></i>
+                <h3>쾌적한 24시간 서버</h3>
+                <p>고성능 서버 사양과 최적화 스크립트를 통해 24시간 끊김 없이 쾌적한 야생 플레이를 보장합니다.</p>
+            </div>
+            <div class="card">
+                <i class="fa-solid fa-compass card-icon"></i>
+                <h3>자유로운 야생 탐험</h3>
+                <p>넓은 마인크래프트 세계에서 원하는 곳에 자신만의 비밀 기지를 세우고 무한한 야생을 즐겨보세요.</p>
+            </div>
+            <div class="card">
+                <i class="fa-solid fa-users card-icon"></i>
+                <h3>활발한 커뮤니티 소통</h3>
+                <p>디스코드 동시 연동 채팅으로 게임 안과 밖 어디서든 유저들과 자유롭게 이야기를 나눌 수 있습니다.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="system-section reveal reveal-right" id="systems">
+        <div class="section-container">
+            <h2 class="section-title">서버 주요 시스템</h2>
+            <div class="system-grid">
+                <div class="system-card">
+                    <i class="fa-solid fa-wheat-awn"></i>
+                    <h4>자유 야생</h4>
+                    <p>제약 없는 광활한 야생 생존 환경을 제공합니다.</p>
+                </div>
+                <div class="system-card">
+                    <i class="fa-solid fa-scroll"></i>
+                    <h4>커스텀 스크립트</h4>
+                    <p>SPS 전용 독자 스크립트로 신선한 재미와 편리함을 선사합니다.</p>
+                </div>
+                <div class="system-card">
+                    <i class="fa-solid fa-comments"></i>
+                    <h4>디코 실시간 연동</h4>
+                    <p>게임에 접속하지 않아도 디스코드에서 서버 채팅 참여가 가능합니다.</p>
+                </div>
+                <div class="system-card">
+                    <i class="fa-solid fa-house"></i>
+                    <h4>나만의 기지 구축</h4>
+                    <p>원하는 장소를 직접 찾아 자신만의 아지트와 건축물을 만들어보세요.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-container reveal reveal-left" id="community">
+        <h2 class="section-title">커뮤니티 & 마인리스트</h2>
+        <div class="widgets-section">
+            
+            <div class="info-box">
+                <h3>SPS 서버 요약</h3>
+                <ul class="icon-list">
+                    <li><i class="fa-solid fa-check"></i> 서버 주소: sisionplusmc.64bit.kr</li>
+                    <li><i class="fa-solid fa-check"></i> 최신 마인크래프트 버전 지원</li>
+                    <li><i class="fa-solid fa-check"></i> 24시간 365일 상시 오픈</li>
+                    <li><i class="fa-solid fa-check"></i> 디스코드 역할 실시간 연동</li>
+                </ul>
+            </div>
+
+            <div class="info-box minelist-card">
+                <h3>마인리스트 추천하기</h3>
+                <p style="color: #949ba4; font-size: 1.1rem; margin-top: 8px;">
+                    배너를 클릭해서 SPS 서버에 추천표를 던져주세요!
+                </p>
+                <a href="https://minelist.kr/servers/17348-sisionplusmc.64bit.kr" target="_blank" class="minelist-banner">
+                    <img src="https://minelist.kr/servers/17348/banner/modern.png" alt="SPS 마인리스트 배너" />
+                </a>
+            </div>
+
+            <div class="custom-discord-card">
+                <div>
+                    <div class="discord-header">
+                        <div class="discord-header-title">
+                            <i class="fa-brands fa-discord"></i> 디스코드
+                        </div>
+                        <div class="online-badge">
+                            <span class="online-dot"></span>
+                            <span id="discordOnlineCount">0</span>명 접속 중
+                        </div>
+                    </div>
+                    <div class="member-title">온라인 멤버</div>
+                    <ul class="member-list" id="discordMemberList">
+                        <li class="member-item">멤버 정보를 불러오는 중...</li>
+                    </ul>
+                </div>
+                <a href="https://discord.gg/your-invite" id="discordInviteLink" target="_blank" class="join-btn">
+                    <i class="fa-brands fa-discord"></i> 디스코드 참여하기
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="section-container reveal reveal-right" id="faq">
+        <h2 class="section-title">자주 묻는 질문 (FAQ)</h2>
+        <div style="max-width: 900px; margin: 0 auto;">
+            <div class="faq-item">
+                <h4><i class="fa-solid fa-circle-question"></i> 정확한 서버 접속 주소가 무엇인가요?</h4>
+                <p>마인크래프트 실행 후 주소 입력창에 <strong>sisionplusmc.64bit.kr</strong> 을 입력하고 접속하시면 됩니다.</p>
+            </div>
+            <div class="faq-item">
+                <h4><i class="fa-solid fa-circle-question"></i> 디스코드 참여는 어떻게 하나요?</h4>
+                <p>상단의 디스코드 버튼을 누르면 유저들과 소통하고 실시간 채팅을 나눌 수 있는 공식 디스코드 서버로 연결됩니다.</p>
+            </div>
+            <div class="faq-item">
+                <h4><i class="fa-solid fa-circle-question"></i> 베드락으로 접속이 되나요?</h4>
+                <p>아니요, 베드락은 아직 지원되지 않습니다.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="credits-section reveal reveal-left" id="credits">
+        <h2 class="section-title">Powered By</h2>
+        <div class="carousel-track-wrapper">
+            <div class="carousel-track">
+                
+                <div class="credit-text-card">
+                    <div class="credit-title">Script Idea</div>
+                    <div class="credit-by">by</div>
+                    <div class="credit-name">SisionPLUS</div>
+                </div>
+
+                <div class="credit-text-card">
+                    <div class="credit-title">Server Hosting</div>
+                    <div class="credit-by">by</div>
+                    <div class="credit-name">Zek</div>
+                </div>
+
+                <div class="credit-text-card">
+                    <div class="credit-title">Server</div>
+                    <div class="credit-by">by</div>
+                    <div class="credit-name">SisionPLUS</div>
+                </div>
+
+                <div class="credit-text-card">
+                    <div class="credit-title">Site Hosting</div>
+                    <div class="credit-by">by</div>
+                    <div class="credit-name">Zek</div>
+                </div>
+
+                <div class="credit-text-card">
+                    <div class="credit-title">Discord Settings</div>
+                    <div class="credit-by">by</div>
+                    <div class="credit-name">SisionPLUS</div>
+                </div>
+
+                <div class="credit-text-card">
+                    <div class="credit-title">Script Idea</div>
+                    <div class="credit-by">by</div>
+                    <div class="credit-name">SisionPLUS</div>
+                </div>
+
+                <div class="credit-text-card">
+                    <div class="credit-title">Server Hosting</div>
+                    <div class="credit-by">by</div>
+                    <div class="credit-name">Zek</div>
+                </div>
+
+                <div class="credit-text-card">
+                    <div class="credit-title">Server</div>
+                    <div class="credit-by">by</div>
+                    <div class="credit-name">SisionPLUS</div>
+                </div>
+
+                <div class="credit-text-card">
+                    <div class="credit-title">Site Hosting</div>
+                    <div class="credit-by">by</div>
+                    <div class="credit-name">Zek</div>
+                </div>
+
+                <div class="credit-text-card">
+                    <div class="credit-title">Discord Settings</div>
+                    <div class="credit-by">by</div>
+                    <div class="credit-name">SisionPLUS</div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 SisionPLUS SMP. All rights reserved.</p>
+        <p>이 페이지는 Gemini의 도움을 받아 제작되었습니다.</p>
+    </footer>
+
+    <script>
+        const words = ["SMP 서버", "야생 라이프", "커뮤니티", "즐거운 공간"];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typingElement = document.getElementById("typingText");
+
+        function typeEffect() {
+            const currentWord = words[wordIndex];
+            
+            if (isDeleting) {
+                typingElement.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typingElement.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 50 : 100;
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                typeSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(typeEffect, typeSpeed);
+        }
+
+        typeEffect();
+
+        const canvas = document.getElementById("bgCanvas");
+        const ctx = canvas.getContext("2d");
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        const particles = [];
+        for (let i = 0; i < 55; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 4 + 1,
+                speedY: Math.random() * 0.8 + 0.2,
+                color: Math.random() > 0.5 ? '#5865F2' : '#57F287'
+            });
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(p => {
+                p.y -= p.speedY;
+                if (p.y < 0) {
+                    p.y = canvas.height;
+                    p.x = Math.random() * canvas.width;
+                }
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, p.size, p.size);
+            });
+
+            requestAnimationFrame(animateCanvas);
+        }
+
+        animateCanvas();
+
+        let copyTimer = null;
+        function copyAddress() {
+            const serverIP = "sisionplusmc.64bit.kr";
+            const msgElement = document.getElementById("copyMsg");
+
+            navigator.clipboard.writeText(serverIP).then(() => {
+                if (copyTimer) clearTimeout(copyTimer);
+                msgElement.classList.add("show");
+                copyTimer = setTimeout(() => {
+                    msgElement.classList.remove("show");
+                }, 2000);
+            });
+        }
+
+        async function fetchDiscordData() {
+            const serverId = "1533469265737551953";
+            try {
+                const response = await fetch(`https://discord.com/api/guilds/${serverId}/widget.json`);
+                if (!response.ok) throw new Error("위젯 비활성화");
+                
+                const data = await response.json();
+
+                document.getElementById("discordOnlineCount").textContent = data.presence_count || 0;
+
+                if (data.instant_invite) {
+                    document.getElementById("discordInviteLink").href = data.instant_invite;
+                }
+
+                const memberListEl = document.getElementById("discordMemberList");
+                memberListEl.innerHTML = "";
+
+                if (data.members && data.members.length > 0) {
+                    data.members.slice(0, 50).forEach(member => {
+                        const li = document.createElement("li");
+                        li.className = "member-item";
+                        li.innerHTML = `
+                            <div class="avatar-wrapper">
+                                <img class="member-avatar" src="${member.avatar_url}" alt="avatar">
+                                <span class="status-dot"></span>
+                            </div>
+                            <span>${member.username}</span>
+                        `;
+                        memberListEl.appendChild(li);
+                    });
+                } else {
+                    memberListEl.innerHTML = "<li class='member-item'>온라인 멤버가 없습니다.</li>";
+                }
+            } catch (err) {
+                console.warn("디스코드 위젯 불러오기 실패:", err);
+                document.getElementById("discordMemberList").innerHTML = 
+                    "<li class='member-item' style='color:#ff4757; font-size:0.9rem;'>디스코드 서버 설정 ➔ 위젯 ➔ '위젯 활성화'를 켜주세요!</li>";
+            }
+        }
+
+        fetchDiscordData();
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.15
+        };
+
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            revealObserver.observe(el);
+        });
+    </script>
+</body>
+</html>
