@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPS - SisionPLUS SMP</title>
-    <!-- 코드 시작 -->
+    <title>SPS SMP 시즌 2 - SisionPLUS</title>
+
     <!-- 큐브(cube) 모양 SVG 파비콘 -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%235865F2' d='M239.1 6.3c10.3-6 23.5-6 33.8 0l216 126c10.2 6 16.5 17 16.5 28.8V351.2c0 11.8-6.3 22.8-16.5 28.8l-216 126c-10.3 6-23.5 6-33.8 0l-216-126C12.3 374 6 363 6 351.2V161.1c0-11.8 6.3-22.8 16.5-28.8l216-126zM256 62.1L88.2 160 256 257.9 423.8 160 256 62.1zm192 140.2l-160 93.3v187.6l160-93.3V202.3z'/></svg>">
 
@@ -169,6 +169,21 @@
             justify-content: center;
             text-align: center;
             padding: 160px 20px 120px 20px;
+        }
+
+        .season-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 24px;
+            padding: 9px 18px;
+            border: 1px solid rgba(87, 242, 135, 0.35);
+            border-radius: 999px;
+            background: rgba(87, 242, 135, 0.1);
+            color: var(--accent);
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
         }
 
         .typing-container {
@@ -602,6 +617,219 @@
             font-size: 1rem;
             background: rgba(10, 11, 13, 0.95);
         }
+
+        /* 시즌 2 시각 스타일과 테마 전환 */
+        body {
+            background: radial-gradient(ellipse at 50% -20%, #20294b 0%, #10131b 48%, #0e0f11 100%);
+            color: #f6f7fb;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        #bgCanvas {
+            background: radial-gradient(circle at center, rgba(35, 43, 70, 0.45) 0%, rgba(14, 15, 17, 0) 75%);
+        }
+
+        header {
+            background: rgba(14, 16, 24, 0.78);
+            border-bottom-color: rgba(255, 255, 255, 0.09);
+        }
+
+        .hero {
+            min-height: 640px;
+            padding-top: 130px;
+            background: radial-gradient(ellipse at center, rgba(88, 101, 242, 0.12), transparent 58%);
+        }
+
+        .season-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 24px;
+            padding: 9px 18px;
+            border: 1px solid rgba(87, 242, 135, 0.35);
+            border-radius: 999px;
+            background: rgba(87, 242, 135, 0.1);
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+        }
+
+        .typing-container {
+            text-shadow: 0 8px 40px rgba(88, 101, 242, 0.22);
+        }
+
+        .card, .info-box, .custom-discord-card, .faq-item {
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+        }
+
+        .card, .system-card, .info-box, .custom-discord-card, .faq-item {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+        }
+
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-left: 18px;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            font: inherit;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        body[data-theme="light"] {
+            --accent: #3f8056;
+            --primary: #5865c9;
+            --primary-hover: #4955ae;
+            background: linear-gradient(180deg, #f6f8f2 0%, #f2f5ed 52%, #edf2e9 100%);
+            color: #34443b;
+        }
+
+        body[data-theme="light"] .typing-text {
+            color: #3f8056;
+            text-shadow: none;
+        }
+
+        body[data-theme="light"] .hero {
+            background: radial-gradient(ellipse at center, rgba(104, 151, 111, 0.08), transparent 62%);
+        }
+
+        body[data-theme="light"] #bgCanvas {
+            background: radial-gradient(circle at 50% 20%, rgba(171, 207, 174, 0.13) 0%, rgba(246, 248, 242, 0) 72%);
+        }
+
+        body[data-theme="light"] header {
+            background: rgba(250, 252, 247, 0.9);
+            border-bottom-color: rgba(70, 93, 73, 0.12);
+        }
+
+        body[data-theme="light"] .logo,
+        body[data-theme="light"] .section-title,
+        body[data-theme="light"] .card h3,
+        body[data-theme="light"] .info-box h3,
+        body[data-theme="light"] .faq-item h4,
+        body[data-theme="light"] .system-card h4,
+        body[data-theme="light"] .credit-title {
+            color: #34443b;
+        }
+
+        body[data-theme="light"] nav a:not(.btn-discord) { color: #65746a; }
+        body[data-theme="light"] nav a:not(.btn-discord):hover { color: #3c8158; }
+        body[data-theme="light"] .hero p,
+        body[data-theme="light"] .card p,
+        body[data-theme="light"] .system-card p,
+        body[data-theme="light"] .faq-item p,
+        body[data-theme="light"] .credit-by,
+        body[data-theme="light"] footer { color: #748078; }
+
+        body[data-theme="light"] .card,
+        body[data-theme="light"] .info-box,
+        body[data-theme="light"] .custom-discord-card,
+        body[data-theme="light"] .faq-item,
+        body[data-theme="light"] .credit-text-card {
+            background: rgba(255, 255, 252, 0.82);
+            border-color: rgba(79, 105, 82, 0.13);
+            box-shadow: 0 12px 32px rgba(53, 75, 56, 0.055);
+        }
+
+        body[data-theme="light"] .system-section,
+        body[data-theme="light"] .credits-section {
+            background: rgba(225, 234, 220, 0.4);
+            border-color: rgba(79, 105, 82, 0.11);
+        }
+
+        body[data-theme="light"] .system-card {
+            background: rgba(255, 255, 252, 0.62);
+            border-color: rgba(79, 105, 82, 0.11);
+        }
+
+        body[data-theme="light"] .member-item,
+        body[data-theme="light"] .icon-list li { color: #46584c; }
+        body[data-theme="light"] .member-title { color: #748078; }
+        body[data-theme="light"] .member-item:hover { background: rgba(65, 95, 70, 0.05); }
+        body[data-theme="light"] .status-dot { border-color: #fff; }
+        body[data-theme="light"] .discord-header { border-bottom-color: rgba(79, 105, 82, 0.13); }
+        body[data-theme="light"] footer { background: rgba(250, 252, 247, 0.7); border-top-color: rgba(79, 105, 82, 0.11); }
+        body[data-theme="light"] .carousel-track-wrapper::before { background: linear-gradient(to right, #edf2e9, transparent); }
+        body[data-theme="light"] .carousel-track-wrapper::after { background: linear-gradient(to left, #edf2e9, transparent); }
+        body[data-theme="light"] .theme-toggle { color: #46584c; background: rgba(65, 95, 70, 0.045); border-color: rgba(79, 105, 82, 0.16); }
+
+        @media (max-width: 768px) {
+            header { width: 100%; padding: 16px 5%; gap: 14px; }
+            nav { width: 100%; gap: 10px 12px; }
+            nav a { margin-left: 0; }
+            .hero { min-height: auto; padding: 76px 18px 64px; }
+            .typing-container {
+                flex-direction: row;
+                flex-wrap: nowrap;
+                gap: 8px;
+                margin-bottom: 16px;
+                font-size: clamp(1.45rem, 5vw, 2rem);
+            }
+            .typing-text { white-space: nowrap; font-size: inherit; }
+            .hero p { max-width: 34rem; }
+            .btn-main { max-width: 100%; }
+            .section-container { padding: 64px 18px; }
+            .grid-3, .system-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+            .card, .info-box, .custom-discord-card { min-width: 0; padding: 22px 18px; }
+            .widgets-section { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+            .card h3, .info-box h3, .system-card h4, .faq-item h4,
+            .card p, .system-card p, .faq-item p, .icon-list li {
+                word-break: keep-all;
+                overflow-wrap: break-word;
+            }
+            .card h3, .info-box h3 { font-size: 1.3rem; }
+            .card p, .system-card p { font-size: 0.94rem; }
+            #features .card:last-child { grid-column: 1 / -1; }
+            .custom-discord-card { grid-column: 1 / -1; }
+            .faq-item { padding: 22px 20px; }
+            .faq-item p { padding-left: 0; }
+            .theme-toggle { margin-left: 0; }
+        }
+
+        @media (max-width: 420px) {
+            .logo { font-size: 1.55rem; }
+            nav { gap: 9px 12px; }
+            nav a { font-size: 0.82rem; }
+            .btn-discord { padding: 8px 13px; }
+            .theme-toggle { padding: 8px 12px; font-size: 0.82rem; }
+            .season-label { font-size: 0.76rem; padding: 8px 13px; }
+            .typing-container, .typing-text { font-size: 1.38rem; }
+            .hero p { font-size: 0.92rem; }
+            .btn-main { width: 100%; justify-content: center; padding: 14px 16px; font-size: 0.95rem; }
+            .section-title { font-size: 1.55rem; margin-bottom: 28px; }
+            .card, .info-box, .custom-discord-card { padding: 18px 14px; }
+            .card h3, .info-box h3 { font-size: 1.15rem; }
+            .card p, .system-card p { font-size: 0.88rem; }
+            .icon-list li { font-size: 0.9rem; word-break: break-word; }
+            .minelist-card { padding: 22px 12px; }
+            .carousel-track-wrapper::before, .carousel-track-wrapper::after { width: 48px; }
+            .widgets-section { grid-template-columns: minmax(0, 1fr); }
+            .minelist-banner { max-width: 100%; }
+        }
+
+        @media (max-width: 359px) {
+            .typing-container, .typing-text { font-size: 1.22rem; }
+            .grid-3, .system-grid, .widgets-section { grid-template-columns: minmax(0, 1fr); }
+            #features .card:last-child, .custom-discord-card { grid-column: auto; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
     </style>
 </head>
 <body>
@@ -621,15 +849,19 @@
             <a href="https://discord.gg/your-invite" target="_blank" class="btn-discord">
                 <i class="fa-brands fa-discord"></i> 디스코드
             </a>
+            <button type="button" class="theme-toggle" id="themeToggle" aria-label="라이트 모드로 전환" aria-pressed="false">
+                <i class="fa-solid fa-sun" aria-hidden="true"></i><span>라이트 모드</span>
+            </button>
         </nav>
     </header>
 
     <section class="hero">
+        <div class="season-label"><i class="fa-solid fa-leaf"></i> SPS SMP · SEASON 2</div>
         <div class="typing-container">
             <span>SPS</span>
             <span class="typing-text" id="typingText"></span>
         </div>
-        <p>자유로운 야생과 개성 넘치는 커스텀 시스템이 공존하는 SisionPLUS SMP 서버!</p>
+        <p>새로운 시즌의 시작! 시즌 2에서 다시 모험을 시작하고, 나만의 이야기를 만들어 보세요.</p>
         
         <div>
             <button class="btn-main" onclick="copyAddress()">
@@ -642,21 +874,21 @@
     </section>
 
     <section class="section-container reveal reveal-left" id="features">
-        <h2 class="section-title">SPS 서버 핵심 특징</h2>
+        <h2 class="section-title">시즌 2에서 만나는 SPS</h2>
         <div class="grid-3">
             <div class="card">
                 <i class="fa-solid fa-bolt card-icon"></i>
-                <h3>쾌적한 24시간 서버</h3>
-                <p>고성능 서버 사양과 최적화 스크립트를 통해 24시간 끊김 없이 쾌적한 야생 플레이를 보장합니다.</p>
+                <h3>새로운 시즌의 시작</h3>
+                <p>시즌 2의 세계에서 새 출발을 하고, 원하는 방식으로 생존과 모험을 즐겨보세요.</p>
             </div>
             <div class="card">
                 <i class="fa-solid fa-compass card-icon"></i>
-                <h3>자유로운 야생 탐험</h3>
-                <p>넓은 마인크래프트 세계에서 원하는 곳에 자신만의 비밀 기지를 세우고 무한한 야생을 즐겨보세요.</p>
+                <h3>나만의 생존 이야기</h3>
+                <p>탐험하고, 건축하고, 친구들과 함께 시즌 2에서 새로운 추억을 쌓아보세요.</p>
             </div>
             <div class="card">
                 <i class="fa-solid fa-users card-icon"></i>
-                <h3>활발한 커뮤니티 소통</h3>
+                <h3>함께하는 커뮤니티</h3>
                 <p>디스코드 동시 연동 채팅으로 게임 안과 밖 어디서든 유저들과 자유롭게 이야기를 나눌 수 있습니다.</p>
             </div>
         </div>
@@ -709,8 +941,8 @@
                 <p style="color: #949ba4; font-size: 1.1rem; margin-top: 8px;">
                     배너를 클릭해서 SPS 서버에 추천표를 던져주세요!
                 </p>
-                <a href="https://minelist.kr/servers/17348-sisionplusmc.64bit.kr" target="_blank" class="minelist-banner">
-                    <img src="https://minelist.kr/servers/17348/banner/modern.png" alt="SPS 마인리스트 배너" />
+                <a href="https://minelist.kr/servers/17562-sisionplusmc.m-c.kr" target="_blank" class="minelist-banner">
+                    <img src="https://minelist.kr/servers/17562/banner/modern.png" alt="SPS 마인리스트 배너" />
                 </a>
             </div>
 
@@ -831,7 +1063,29 @@
     </footer>
 
     <script>
-        const words = ["SMP 서버", "야생 라이프", "커뮤니티", "즐거운 공간"];
+        const themeToggle = document.getElementById("themeToggle");
+        const themeIcon = themeToggle.querySelector("i");
+        const themeLabel = themeToggle.querySelector("span");
+
+        function setTheme(theme) {
+            const isLight = theme === "light";
+            document.body.dataset.theme = isLight ? "light" : "dark";
+            themeToggle.setAttribute("aria-pressed", String(isLight));
+            themeToggle.setAttribute("aria-label", isLight ? "다크 모드로 전환" : "라이트 모드로 전환");
+            themeIcon.className = isLight ? "fa-solid fa-moon" : "fa-solid fa-sun";
+            themeLabel.textContent = isLight ? "다크 모드" : "라이트 모드";
+        }
+
+        let savedTheme = "dark";
+        try { savedTheme = localStorage.getItem("sps-theme") || "dark"; } catch (error) { /* 저장이 막힌 환경은 기본 테마 사용 */ }
+        setTheme(savedTheme);
+        themeToggle.addEventListener("click", () => {
+            const nextTheme = document.body.dataset.theme === "light" ? "dark" : "light";
+            setTheme(nextTheme);
+            try { localStorage.setItem("sps-theme", nextTheme); } catch (error) { /* 테마 전환은 저장 실패와 무관하게 적용 */ }
+        });
+
+        const words = ["시즌 2", "새로운 모험", "야생 라이프", "함께하는 SPS"];
         let wordIndex = 0;
         let charIndex = 0;
         let isDeleting = false;
